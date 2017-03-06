@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<property name="now" value="now()" dbms="mysql,h2" />
+	<property name="now" value="current_timestamp" dbms="postgresql" />
+
+	<!-- Added the entity Product. -->
+	<changeSet id="019" author="jhipster">
+		<createTable tableName="PRODUCT">
+			<column name="product_id" type="bigint" autoIncrement="true"
+				startWith="500">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="unique_id" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+			<column name="product_type" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="product_parent_id" type="bigint" />
+			<column name="brand" type="varchar(255)"/>
+			<column name="views" type="INT"/>
+			<column name="custom1" type="varchar(1024)"/>
+			<column name="custom2" type="varchar(1024)"/>
+			<column name="image_id" type="bigint" />
+			<column name="created_by" type="varchar(50)">
+				<constraints nullable="false" />
+			</column>
+			<column name="created_date" type="timestamp" defaultValueDate="${now}">
+				<constraints nullable="false" />
+			</column>
+			<column name="last_modified_by" type="varchar(50)"/>
+			<column name="last_modified_date" type="timestamp"/>
+		</createTable>
+
+		<addForeignKeyConstraint baseColumnNames="product_parent_id"
+			baseTableName="PRODUCT" constraintName="fk_product_product_parent_id"
+			referencedColumnNames="product_id" referencedTableName="PRODUCT" />
+		<addForeignKeyConstraint baseColumnNames="image_id"
+			baseTableName="PRODUCT" constraintName="fk_product_image"
+			referencedColumnNames="image_id" referencedTableName="IMAGE" />
+
+		<createTable tableName="PRODUCT_CATEGORY">
+			<column name="category_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="product_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<addPrimaryKey columnNames="product_id, category_id"
+			tableName="PRODUCT_CATEGORY" />
+
+		<addForeignKeyConstraint baseColumnNames="product_id"
+			baseTableName="PRODUCT_CATEGORY" constraintName="fk_product_category_category_id"
+			referencedColumnNames="product_id" referencedTableName="PRODUCT" />
+
+		<addForeignKeyConstraint baseColumnNames="category_id"
+			baseTableName="PRODUCT_CATEGORY" constraintName="fk_category_category_product_id"
+			referencedColumnNames="category_id" referencedTableName="CATEGORY" />
+
+	</changeSet>
+</databaseChangeLog>

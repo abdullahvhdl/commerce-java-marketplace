@@ -1,0 +1,20 @@
+<div class="row pagination">
+
+	<div class="col-sm-6 text-left links">
+		<ul class="">
+			<li ng-if="!products.first"><a ng-click="$parent.page=0">|&lt;</a></li>
+			<li ng-if="!products.first"><a ng-click="$parent.page=page-1">&lt;</a></li>
+			<li ng-repeat="p in range(0,products.totalPages)"
+				ng-class="{active: page == p}"><span>{{page ==
+					p?p+1:null}}<a ng-if="page != p" ng-click="$parent.$parent.page=p">{{p+1}}</a>
+			</span></li>
+			<li ng-if="!products.last"><a ng-click="$parent.page=page+1">&gt;</a></li>
+			<li ng-if="!products.last"><a
+				ng-click="$parent.page=products.totalPages-1">&gt;|</a></li>
+		</ul>
+	</div>
+	<div class="col-sm-6 text-right results">Showing
+		{{products.size*products.number+1}} to
+		{{products.size*products.number+products.numberOfElements}} of
+		{{products.totalElements}} ({{products.totalPages}} Pages)</div>
+</div>

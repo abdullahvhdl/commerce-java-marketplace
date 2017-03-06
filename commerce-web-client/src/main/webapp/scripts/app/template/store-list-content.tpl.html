@@ -1,0 +1,20 @@
+<div class="store-list-content">
+	<div class="xl-30 hide-on-mobile">
+		<a href="#/{{store.name+'-'+store.id}}"><img height="90" width="150"
+			ng-if="store.image.image1" class="store-image"
+			ng-src="{{store.image.image1}}?width=150&height=90" /> <img
+			ng-if="!store.image.image1" class="store-image"
+			ng-src="assets/images/no_image.png" /> </a>
+	</div>
+	<div class="xl-60 sm-90 store-info">
+		<h3>
+			<a href="#/{{store.name+'-'+store.id}}">{{store.name}}</a> <small
+				style="float: right;"><strong>{{store.distance}} mi</strong></small>
+		</h3>
+		<p>{{store.address.address1+', '+ store.address.city}}</p>
+		<br>
+		<p>{{store.description | cut:true:120:'...'}}</p>
+	</div>
+
+	<div class="clearfix"></div>
+</div>

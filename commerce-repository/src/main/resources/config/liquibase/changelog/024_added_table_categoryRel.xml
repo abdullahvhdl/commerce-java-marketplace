@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <property name="now" value="now()" dbms="mysql,h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+
+    <!--
+        Added the entity CategoryDesc.
+    -->
+    <changeSet id="024" author="Ibrahim">
+        <createTable tableName="CATEGORY_REL">
+            <column name="category_parent_id" type="bigint">
+            	<constraints nullable="false"/>
+            </column>
+            <column name="category_child_id" type="bigint">
+            	<constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <addPrimaryKey columnNames="category_parent_id, category_child_id" tableName="CATEGORY_REL"/>
+        
+        <addForeignKeyConstraint baseColumnNames="category_parent_id"
+                                 baseTableName="CATEGORY_REL"
+                                 constraintName="fk_category_rel_category_parent_id"
+                                 referencedColumnNames="category_id"
+                                 referencedTableName="CATEGORY"/>
+		<addForeignKeyConstraint baseColumnNames="category_child_id"
+                                 baseTableName="CATEGORY_REL"
+                                 constraintName="fk_category_rel_category_child_id"
+                                 referencedColumnNames="category_id"
+                                 referencedTableName="CATEGORY"/>
+    </changeSet>
+</databaseChangeLog>

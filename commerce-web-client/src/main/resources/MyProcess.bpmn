@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="quickOrderProcess" name="Quick Order Process" isExecutable="true">
+   	<startEvent id="startOrderSubmit" name="Start Order Submit">
+   	<incoming>${orderId} 	
+   	</incoming>
+   	
+   	</startEvent>
+   	<sequenceFlow id="startOrderSubmitFlow" sourceRef="startOrderSubmit" targetRef="reviewSubmittedOrder"></sequenceFlow>
+    <userTask id="reviewSubmittedOrder" name="Review Submitted Order"></userTask>
+    <exclusiveGateway id="availablityGateway" name="Availability Check"></exclusiveGateway>
+    <sequenceFlow id="checkProductAvailability" sourceRef="reviewSubmittedOrder" targetRef="availablityGateway"></sequenceFlow>
+    <serviceTask id="successMailTask" name="Success Order" activiti:type="mail"></serviceTask>
+    <serviceTask id="failureMailTask" name="Failure Order" activiti:type="mail"></serviceTask>
+    <endEvent id="successEnd" name="End"></endEvent>
+    <endEvent id="failureEnd" name="End"></endEvent>
+    <sequenceFlow id="successEmailEndGateway" sourceRef="successMailTask" targetRef="successEnd"></sequenceFlow>
+    <sequenceFlow id="failureEmailEndGateway" sourceRef="failureMailTask" targetRef="failureEnd"></sequenceFlow>
+    <sequenceFlow id="sendSuccessEmailGateway" sourceRef="availablityGateway" targetRef="successMailTask"></sequenceFlow>
+    <sequenceFlow id="sendFailureEmailGateway" sourceRef="availablityGateway" targetRef="failureMailTask"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_myProcess">
+   
+  </bpmndi:BPMNDiagram>
+</definitions>

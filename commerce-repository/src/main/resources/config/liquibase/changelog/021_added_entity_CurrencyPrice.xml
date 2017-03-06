@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <property name="now" value="now()" dbms="mysql,h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+
+    <!--
+        Added the entity CurrencyPrice.
+    -->
+    <changeSet id="021" author="jhipster">
+        <createTable tableName="CURRENCY_PRICE">
+            <column name="currency_price_id" type="bigint" autoIncrement="true" startWith="500">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="price" type="decimal(10,2)">
+                <constraints nullable="false" />
+            </column>
+            <column name="currency" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="price_offer_id" type="bigint"/>
+            <column name="created_by" type="varchar(50)">
+				<constraints nullable="false" />
+			</column>
+			<column name="created_date" type="timestamp" defaultValueDate="${now}">
+				<constraints nullable="false" />
+			</column>
+			<column name="last_modified_by" type="varchar(50)"/>
+			<column name="last_modified_date" type="timestamp"/>
+        </createTable>
+        
+        <addForeignKeyConstraint baseColumnNames="price_offer_id"
+                                 baseTableName="CURRENCY_PRICE"
+                                 constraintName="fk_currency_price_priceoffer_id"
+                                 referencedColumnNames="price_offer_id"
+                                 referencedTableName="PRICE_OFFER"/>
+
+    </changeSet>
+</databaseChangeLog>

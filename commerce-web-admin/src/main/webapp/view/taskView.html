@@ -1,0 +1,29 @@
+<div class="row" ng-controller="TaskController">
+	<h3>{{task.name}}</h3>
+	<div ng-bind-html="task.description"></div>
+	<button class="btn btn-primary" ng-click="claim(task)" ng-if="!task.assignee">Claim</button>
+	<form class="form-horizontal" ng-submit="submitTask()" ng-if="task.assignee">
+		<fieldset>
+			<legend>Complete Form</legend>
+			<div class="form-group" ng-repeat="form in task.formProperties">
+				<label for="{{form.id}}" class="col-lg-2 control-label">{{form.name}}</label>
+				<div class="col-lg-10" ng-if="form.type != 'enum'">
+					<input type="text" class="form-control" id="{{form.id}}"
+						ng-model="form.value">
+				</div>
+				<div class="col-lg-10" ng-if="form.type == 'enum'">
+					<select  class="form-control" id="{{form.id}}"
+						ng-model="form.value">
+						<option ng-repeat="(key, value) in form.enumValues" value="{{key}}">{{value}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-lg-10 col-lg-offset-2">
+					<button type="reset" class="btn btn-default" ng-click="cancel()">Cancel</button>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>

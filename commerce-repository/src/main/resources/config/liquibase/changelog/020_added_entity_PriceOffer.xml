@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<property name="now" value="now()" dbms="mysql,h2" />
+	<property name="now" value="current_timestamp" dbms="postgresql" />
+
+	<!-- Added the entity PriceOffer. -->
+	<changeSet id="020" author="jhipster">
+		<createTable tableName="PRICE_OFFER">
+			<column name="price_offer_id" type="bigint" autoIncrement="true"
+				startWith="500">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="price_offer_type_id" type="bigint" />
+			<column name="product_id" type="bigint" />
+			<column name="store_id" type="bigint" />
+			<column name="created_by" type="varchar(50)">
+				<constraints nullable="false" />
+			</column>
+			<column name="created_date" type="timestamp" defaultValueDate="${now}">
+				<constraints nullable="false" />
+			</column>
+			<column name="last_modified_by" type="varchar(50)"/>
+			<column name="last_modified_date" type="timestamp"/>
+		</createTable>
+
+		<addForeignKeyConstraint baseColumnNames="price_offer_type_id"
+			baseTableName="PRICE_OFFER" constraintName="fk_price_offer_type_id"
+			referencedColumnNames="price_offer_type_id" referencedTableName="PRICE_OFFER_TYPE" />
+
+		<addForeignKeyConstraint baseColumnNames="product_id"
+			baseTableName="PRICE_OFFER" constraintName="fk_price_offer_product_id"
+			referencedColumnNames="product_id" referencedTableName="PRODUCT" />
+		<addForeignKeyConstraint baseColumnNames="store_id"
+			baseTableName="PRICE_OFFER" constraintName="fk_price_offer_store_id"
+			referencedColumnNames="store_id" referencedTableName="STORE" />
+
+	</changeSet>
+</databaseChangeLog>

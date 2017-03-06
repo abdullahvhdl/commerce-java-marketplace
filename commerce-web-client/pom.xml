@@ -1,0 +1,62 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.respodo</groupId>
+		<artifactId>commerce</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>commerce-web-client</artifactId>
+	<packaging>war</packaging>
+	<name>commerce-web-client</name>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>com.respodo</groupId>
+			<artifactId>commerce-service</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<version>${liquibase.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.javassist</groupId>
+						<artifactId>javassist</artifactId>
+						<version>3.18.2-GA</version>
+					</dependency>
+					<dependency>
+						<groupId>org.liquibase.ext</groupId>
+						<artifactId>liquibase-hibernate4</artifactId>
+						<version>${liquibase-hibernate4.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-starter-data-jpa</artifactId>
+						<version>${project.parent.version}</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<changeLogFile>src/main/resources/config/liquibase/master.xml</changeLogFile>
+					<diffChangeLogFile>src/main/resources/config/liquibase/changelog/${maven.build.timestamp}_changelog.xml</diffChangeLogFile>
+					<driver>com.mysql.jdbc.Driver</driver>
+					<url>jdbc:mysql://localhost:3306/commerce</url>
+					<defaultSchemaName>commerce</defaultSchemaName>
+					<username>root</username>
+					<password />
+					<referenceUrl>hibernate:spring:com.respodo.commerce.domain?dialect=org.hibernate.dialect.MySQLInnoDBDialect</referenceUrl>
+					<verbose>true</verbose>
+					<logging>debug</logging>
+					<diffExcludeObjects>oauth_access_token, oauth_approvals,
+						oauth_client_details, oauth_client_token, oauth_code,
+						oauth_refresh_token</diffExcludeObjects>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

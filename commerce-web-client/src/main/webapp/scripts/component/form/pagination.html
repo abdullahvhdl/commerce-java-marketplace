@@ -1,0 +1,20 @@
+<div class="row pagination">
+
+	<div class="col-sm-6 text-left links" ng-if="pageable.totalPages>1">
+		<ul class="">
+			<li ng-if="!pageable.first"><a ng-click="loadPage(0)">|&lt;</a></li>
+			<li ng-if="!pageable.first"><a ng-click="loadPage(page-1)">&lt;</a></li>
+			<li ng-repeat="p in range(0,pageable.totalPages)"
+				ng-class="{active: page == p}"><span>{{page ==
+					p?p+1:null}}<a ng-if="page != p" ng-click="loadPage(p)">{{p+1}}</a>
+			</span></li>
+			<li ng-if="!pageable.last"><a ng-click="loadPage(page+1)">&gt;</a></li>
+			<li ng-if="!pageable.last"><a
+				ng-click="loadPage(pageable.totalPages-1)">&gt;|</a></li>
+		</ul>
+	</div>
+	<div class="col-sm-6 text-right results">Showing
+		{{pageable.size*pageable.number+1}} to
+		{{pageable.size*pageable.number+pageable.numberOfElements}} of
+		{{pageable.totalElements}} ({{pageable.totalPages}} Pages)</div>
+</div>

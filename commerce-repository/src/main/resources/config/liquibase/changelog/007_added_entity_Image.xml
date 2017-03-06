@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <property name="now" value="now()" dbms="mysql,h2"/>
+    <property name="now" value="current_timestamp" dbms="postgresql"/>
+
+    <!--
+        Added the entity Image.
+    -->
+    <changeSet id="007" author="jhipster">
+        <createTable tableName="IMAGE">
+            <column name="image_id" type="bigint" autoIncrement="true" startWith="500">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="image1" type="varchar(255)"/>
+            <column name="image2" type="varchar(255)"/>
+            <column name="image3" type="varchar(255)"/>
+            <column name="image4" type="varchar(255)"/>
+            <column name="thumbnail" type="varchar(255)"/>
+            <column name="other_images" type="varchar(255)"/>
+            <column name="created_by" type="varchar(50)">
+				<constraints nullable="false" />
+			</column>
+			<column name="created_date" type="timestamp" defaultValueDate="${now}">
+				<constraints nullable="false" />
+			</column>
+			<column name="last_modified_by" type="varchar(50)"/>
+			<column name="last_modified_date" type="timestamp"/>
+        </createTable>
+        
+    </changeSet>
+</databaseChangeLog>

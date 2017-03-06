@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+
+	<!-- Templates -->
+
+	<definition name="template.index" template="/WEB-INF/tiles/layout/index.jsp">
+		<put-attribute name="title" value="Commerce" />
+	</definition>
+	<definition name="template.page" template="/WEB-INF/tiles/layout/page.jsp">
+		<put-attribute name="header"
+			value="/WEB-INF/tiles/view/common/header.jsp" />
+		<put-attribute name="top-module" value="" />
+		<put-attribute name="body" value="" />
+		<put-attribute name="bottom-module" value="" />
+		<put-attribute name="footer"
+			value="/WEB-INF/tiles/view/common/footer.jsp" />
+	</definition>
+	<definition name="index" extends="template.index">
+
+	</definition>
+	<definition name="page/home" extends="template.page">
+		<put-attribute name="top-module"
+			value="/WEB-INF/tiles/view/common/slider.jsp" />
+		<put-attribute name="body" value="/WEB-INF/tiles/view/page/home.jsp" />
+	</definition>
+	<definition name="page/*" extends="template.page">
+		<put-attribute name="body" value="/WEB-INF/tiles/view/page/{1}.jsp" />
+	</definition>
+	<definition name="page/store/storeHome" extends="template.page">
+		<put-attribute name="header"
+			value="/WEB-INF/tiles/view/common/storeHeader.jsp" />
+		<put-attribute name="top-module"
+			value="/WEB-INF/tiles/view/common/slider.jsp" />
+		<put-attribute name="body" value="/WEB-INF/tiles/view/page/storeHome.jsp" />
+	</definition>
+	<definition name="page/store/*" extends="template.page">
+		<put-attribute name="header"
+			value="/WEB-INF/tiles/view/common/storeHeader.jsp" />
+		<put-attribute name="body" value="/WEB-INF/tiles/view/page/{1}.jsp" />
+	</definition>
+	<!-- Pages -->
+
+
+</tiles-definitions>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="quickOrderProcess" name="orderId" isExecutable="true">
+    <startEvent id="startevent1" name="Order Start">
+      <documentation>New Order, orderId is ${orderId}.</documentation>
+    </startEvent>
+    <serviceTask id="getOrderDetails" name="Get Order Details for OrderId ${orderId}" activiti:expression="#{quickOrderService.getOrderDetails(execution)}">
+      <documentation>Geting Order Details for orderId ${orderId}.</documentation>
+    </serviceTask>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="getOrderDetails"></sequenceFlow>
+    <userTask id="verifyOrder" name="Verify Order ${orderId}" activiti:candidateGroups="ROLE_HELP_DESK">
+      <documentation>&lt;h4&gt;Product: ${product.description[0].name} &lt;/h4&gt;
+&lt;h4&gt;Store: ${store.name} &lt;/h4&gt;
+&lt;h4&gt;Store Address: ${store.address.address1}, ${store.address.address2}, ${store.address.city}, ${store.address.state}, ${store.address.zipCode}, ${store.address.country}&lt;/h4&gt;
+&lt;h4&gt;Customer Name: ${user.firstName}  ${user.lastName} &lt;/h4&gt;
+&lt;h4&gt;Customer Email: ${user.email} &lt;/h4&gt;
+&lt;h4&gt;Customer Phone: ${user.phoneNumber} &lt;/h4&gt;</documentation>
+      <extensionElements>
+        <activiti:formProperty id="address1" name="Address 1" type="string" expression="#{user.address1}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="address2" name="Address 2" type="string" expression="#{user.address2}"></activiti:formProperty>
+        <activiti:formProperty id="city" name="City" type="string" expression="#{user.city}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="state" name="State" type="string" expression="#{user.state}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="country" name="Country" type="string" expression="#{user.country}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="zipCode" name="ZipCode" type="string" expression="#{user.zipCode}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="quantity" name="Quantity" type="long" expression="#{quantityPrice.quantity}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="productAvailable" name="Store Availability" type="enum" variable="productAvailable" required="true">
+          <activiti:value id="true" name="Available"></activiti:value>
+          <activiti:value id="false" name="Not Available"></activiti:value>
+        </activiti:formProperty>
+        <activiti:formProperty id="customerConfirm" name="Customer Confirm" type="enum" variable="customerConfirm" required="true">
+          <activiti:value id="true" name="Interested"></activiti:value>
+          <activiti:value id="false" name="Not Interested"></activiti:value>
+        </activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow2" sourceRef="getOrderDetails" targetRef="verifyOrder"></sequenceFlow>
+    <serviceTask id="updateOrder" name="Update Order" activiti:expression="#{quickOrderService.updateOrder(execution)}">
+      <documentation>Product "${product.productDescription.name}" at StoreName ${store.name} is available: ${productAvailable}
+User ${user.firstName} ${user.lastName} is interested: ${userInterested}</documentation>
+    </serviceTask>
+    <sequenceFlow id="flow3" sourceRef="verifyOrder" targetRef="updateOrder"></sequenceFlow>
+    <exclusiveGateway id="statusDecision" name="Order Status Decision"></exclusiveGateway>
+    <sequenceFlow id="flow4" sourceRef="updateOrder" targetRef="statusDecision"></sequenceFlow>
+    <serviceTask id="sucessMail" name="Success Mail" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${user.email}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="from">
+          <activiti:string><![CDATA[sales@commerce.com]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Product Order Confirmed]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:string><![CDATA[Order Confirmed.]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <serviceTask id="failureMail" name="Failure Male" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:expression><![CDATA[${user.email}]]></activiti:expression>
+        </activiti:field>
+        <activiti:field name="from">
+          <activiti:string><![CDATA[sales@commerce.com]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string><![CDATA[Product Order Cancelled]]></activiti:string>
+        </activiti:field>
+        <activiti:field name="html">
+          <activiti:string><![CDATA[Order Cancelled.]]></activiti:string>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow5" sourceRef="statusDecision" targetRef="sucessMail">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${productAvailable =="true" && customerConfirm=="true"}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="statusDecision" targetRef="failureMail">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${productAvailable =="false" || customerConfirm=="false"}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow7" sourceRef="sucessMail" targetRef="endevent1"></sequenceFlow>
+    <endEvent id="endevent2" name="End"></endEvent>
+    <sequenceFlow id="flow8" sourceRef="failureMail" targetRef="endevent2"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_quickOrderProcess">
+    <bpmndi:BPMNPlane bpmnElement="quickOrderProcess" id="BPMNPlane_quickOrderProcess">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="50.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="getOrderDetails" id="BPMNShape_getOrderDetails">
+        <omgdc:Bounds height="55.0" width="105.0" x="150.0" y="80.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="verifyOrder" id="BPMNShape_verifyOrder">
+        <omgdc:Bounds height="55.0" width="105.0" x="320.0" y="80.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="updateOrder" id="BPMNShape_updateOrder">
+        <omgdc:Bounds height="55.0" width="105.0" x="470.0" y="80.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="statusDecision" id="BPMNShape_statusDecision">
+        <omgdc:Bounds height="40.0" width="40.0" x="502.0" y="180.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sucessMail" id="BPMNShape_sucessMail">
+        <omgdc:Bounds height="55.0" width="105.0" x="570.0" y="270.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="failureMail" id="BPMNShape_failureMail">
+        <omgdc:Bounds height="55.0" width="105.0" x="320.0" y="270.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="720.0" y="280.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent2" id="BPMNShape_endevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="470.0" y="280.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="85.0" y="107.0"></omgdi:waypoint>
+        <omgdi:waypoint x="150.0" y="107.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="255.0" y="107.0"></omgdi:waypoint>
+        <omgdi:waypoint x="320.0" y="107.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="425.0" y="107.0"></omgdi:waypoint>
+        <omgdi:waypoint x="470.0" y="107.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="522.0" y="135.0"></omgdi:waypoint>
+        <omgdi:waypoint x="522.0" y="180.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="542.0" y="200.0"></omgdi:waypoint>
+        <omgdi:waypoint x="622.0" y="200.0"></omgdi:waypoint>
+        <omgdi:waypoint x="622.0" y="270.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="502.0" y="200.0"></omgdi:waypoint>
+        <omgdi:waypoint x="372.0" y="200.0"></omgdi:waypoint>
+        <omgdi:waypoint x="372.0" y="270.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="675.0" y="297.0"></omgdi:waypoint>
+        <omgdi:waypoint x="720.0" y="297.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="425.0" y="297.0"></omgdi:waypoint>
+        <omgdi:waypoint x="470.0" y="297.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

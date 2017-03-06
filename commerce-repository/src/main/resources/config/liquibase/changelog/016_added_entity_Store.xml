@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<property name="now" value="now()" dbms="mysql,h2" />
+	<property name="now" value="current_timestamp" dbms="postgresql" />
+
+	<!-- Added the entity Store. -->
+	<changeSet id="016" author="jhipster">
+		<createTable tableName="STORE">
+			<column name="store_id" type="bigint" autoIncrement="true"
+				startWith="500">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="unique_id" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+			<column name="name" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="description" type="text()" />
+			<column name="active_catalog_id" type="bigint" />
+			<column name="image_id" type="bigint" />
+			<column name="location_id" type="bigint" />
+			<column name="store_type_id" type="bigint" />
+			<column name="address_id" type="bigint" />
+			<column name="owner_id" type="bigint" />
+			<column name="views" type="INT"/>
+			<column name="custom1" type="varchar(1024)"/>
+			<column name="custom2" type="varchar(1024)"/>
+			<column name="created_by" type="varchar(50)">
+				<constraints nullable="false" />
+			</column>
+			<column name="created_date" type="timestamp" defaultValueDate="${now}">
+				<constraints nullable="false" />
+			</column>
+			<column name="last_modified_by" type="varchar(50)"/>
+			<column name="last_modified_date" type="timestamp"/>
+		</createTable>
+		
+		<addForeignKeyConstraint baseColumnNames="active_catalog_id"
+			baseTableName="STORE" constraintName="fk_store_active_catalog"
+			referencedColumnNames="catalog_id" referencedTableName="CATALOG" />
+
+		<addForeignKeyConstraint baseColumnNames="image_id"
+			baseTableName="STORE" constraintName="fk_store_image_id"
+			referencedColumnNames="image_id" referencedTableName="IMAGE" />
+
+		<addForeignKeyConstraint baseColumnNames="location_id"
+			baseTableName="STORE" constraintName="fk_store_location_id"
+			referencedColumnNames="location_id" referencedTableName="LOCATION" />
+
+		<addForeignKeyConstraint baseColumnNames="store_type_id"
+			baseTableName="STORE" constraintName="fk_store_type_id"
+			referencedColumnNames="store_type_id" referencedTableName="STORE_TYPE" />
+
+		<addForeignKeyConstraint baseColumnNames="address_id"
+			baseTableName="STORE" constraintName="fk_store_address_id"
+			referencedColumnNames="address_id" referencedTableName="ADDRESS" />
+
+		<addForeignKeyConstraint baseColumnNames="owner_id"
+			baseTableName="STORE" constraintName="fk_store_owner_id"
+			referencedColumnNames="user_id" referencedTableName="USER" />
+
+		<createTable tableName="STORE_CATALOG">
+			<column name="catalog_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+			<column name="store_id" type="bigint">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<addPrimaryKey columnNames="store_id, catalog_id"
+			tableName="STORE_CATALOG" />
+
+		<addForeignKeyConstraint baseColumnNames="store_id"
+			baseTableName="STORE_CATALOG" constraintName="fk_store_catalog_catalog_id"
+			referencedColumnNames="store_id" referencedTableName="STORE" />
+
+		<addForeignKeyConstraint baseColumnNames="catalog_id"
+			baseTableName="STORE_CATALOG" constraintName="fk_catalog_catalog_store_id"
+			referencedColumnNames="catalog_id" referencedTableName="CATALOG" />
+
+	</changeSet>
+</databaseChangeLog>

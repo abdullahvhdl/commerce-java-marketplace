@@ -1,0 +1,18 @@
+<div  class="store-list-content">
+	<div class="xl-30 hide-on-mobile">
+		<a ui-sref="store({storeName:store.name, storeId:store.id})"><img
+			class="store-image" src="{{store.image.thumbnail}}" /></a>
+	</div>
+	<div class="xl-60 sm-90 store-info">
+		<h3>
+			<a ui-sref="store({storeName:store.name, storeId:store.id})">{{store.name}}</a>
+			<small style="float: right;"><strong>{{store.distance}}
+					mi</strong></small>
+		</h3>
+		<p>{{store.address.address1+', '+ store.address.city}}</p>
+		<br>
+		<p>{{store.description | cut:true:120:'...'}}</p>
+	</div>
+
+	<div class="clearfix"></div>
+</div>

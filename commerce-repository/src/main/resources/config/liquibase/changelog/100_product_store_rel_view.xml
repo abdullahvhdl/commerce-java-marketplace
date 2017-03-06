@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<property name="now" value="now()" dbms="mysql,h2" />
+	<property name="now" value="current_timestamp" dbms="postgresql" />
+
+	<!-- Added the entity Store. -->
+	<changeSet id="100" author="Ibrahim">
+
+		<createView replaceIfExists="true" 
+			viewName="PRODUCT_STORE_REL">Select distinct PRODUCT.product_id as product_id , STORE.*  from STORE 
+inner join STORE_CATALOG on (STORE_CATALOG.store_id = STORE.store_id and STORE_CATALOG.catalog_id = STORE.active_catalog_id)
+inner join CATALOG on (CATALOG.catalog_id = STORE_CATALOG.catalog_id)
+inner join CATEGORY on ( CATEGORY.catalog_id = CATALOG.catalog_id)
+inner join PRODUCT_CATEGORY on (PRODUCT_CATEGORY.category_id = CATEGORY.category_id)
+inner join PRODUCT on (PRODUCT.product_id = PRODUCT_CATEGORY.product_id)</createView>
+
+
+
+	</changeSet>
+</databaseChangeLog>

@@ -1,0 +1,116 @@
+<div class="alert alert-danger warning" ng-show="error">
+	<i class="fa fa-exclamation-circle"></i> <strong>Registration
+		failed!</strong> Please check your input and try again.
+</div>
+<div class="alert alert-danger warning" ng-show="errorEmailExists">
+	<i class="fa fa-exclamation-circle"></i> <strong>E-mail is
+		already in use!</strong> Please choose another one.
+</div>
+<div id="content" class="col-sm-12">
+	<h1 class="heading-title">Item Order</h1>
+	<div class="alert alert-danger warning" ng-show="!selectedProduct.id">
+		<i class="fa fa-exclamation-circle"></i>Please select the product
+		Options in Order to complete your order!
+	</div>
+	<p class="account-text" ng-show="success">You successfully ordered
+		this Product, a confirmation email is sent to you and our help desk
+		will contact you as soon as possible.</p>
+
+	<form ng-show="!success && selectedProduct.id && !isAuthenticated()"
+		name="quickOrder" role="form" novalidate ng-submit="quickOrderSubmit()">
+		<p class="account-text">
+			If you already have an account with us, please login at the <a
+				href="#/login" ng-click="cancelOrder()">login page</a>.
+		</p>
+		<fieldset id="account">
+			<h2 class="secondary-title">Your Personal Details</h2>
+			<div class="form-group required" show-errors>
+				<label class="col-sm-2 control-label" for="input-firstname">First
+					Name</label>
+				<div class="col-sm-9">
+					<input type="text" name="firstname" value=""
+						placeholder="First Name" id="input-firstname" class="form-control"
+						ng-model="account.firstName" required>
+					<div class="text-danger"
+						ng-show="(quickOrder.firstname.$dirty ||quickOrder.$submitted) && quickOrder.firstname.$invalid">First
+						Name is Required!</div>
+				</div>
+			</div>
+			<div class="form-group required" show-errors>
+				<label class="col-sm-2 control-label" for="input-lastname">Last
+					Name</label>
+				<div class="col-sm-9">
+					<input type="text" name="lastname" value="" placeholder="Last Name"
+						id="input-lastname" class="form-control"
+						ng-model="account.lastName" required>
+					<div class="text-danger"
+						ng-show="(quickOrder.lastname.$dirty ||quickOrder.$submitted) && quickOrder.lastname.$invalid">Last
+						Name is Required!</div>
+				</div>
+			</div>
+			<div class="form-group required" show-errors>
+				<label class="col-sm-2 control-label" for="input-email">E-Mail</label>
+				<div class="col-sm-9">
+					<input type="email" name="email" value="" placeholder="E-Mail"
+						id="input-email" class="form-control" ng-model="account.email"
+						ng-minlength=5 ng-maxlength=100 required>
+					<div class="text-danger"
+						ng-show="(quickOrder.email.$dirty ||quickOrder.$submitted) && quickOrder.email.$invalid">Email
+						is Required or not Valid!</div>
+
+				</div>
+			</div>
+			<div class="form-group required" show-errors>
+				<label class="col-sm-2 control-label" for="input-phone">Phone
+					Number</label>
+				<div class="col-sm-9">
+					<input type="tel" name="telephone" value=""
+						placeholder="Phone Number" id="input-phone" class="form-control"
+						ng-model="account.phoneNumber" required>
+					<div class="text-danger"
+						ng-show="(quickOrder.telephone.$dirty ||quickOrder.$submitted) && quickOrder.telephone.$invalid">Telephone
+						Number is Required!</div>
+				</div>
+			</div>
+		</fieldset>
+		<br>
+		<div class="buttons">
+			<div class="pull-left">
+				<button ng-click="cancelOrder()" type="button"
+					class="btn btn-primary button">Cancel</button>
+			</div>
+			<div class="pull-right">
+				<input type="submit" value="Order" class="btn btn-primary button">
+			</div>
+		</div>
+	</form>
+	<form ng-show="!success && selectedProduct.id && isAuthenticated()"
+		name="order" role="form" novalidate ng-submit="registerOrder()">
+		<p class="account-text">Please verify Your phone number.</p>
+		<fieldset id="account">
+			<div class="form-group required" show-errors>
+				<label class="col-sm-2 control-label" for="input-phone">Phone
+					Number </label>
+				<div class="col-sm-9">
+					<input type="text" name="phone" value="" placeholder="Phone Number"
+						id="input-phone" class="form-control"
+						ng-model="account.phoneNumber" required>
+					<div class="text-danger"
+						ng-show="(order.telephone.$dirty ||order.$submitted) && order.telephone.$invalid">Telephone
+						Number is Required!</div>
+
+				</div>
+			</div>
+		</fieldset>
+		<br>
+		<div class="buttons">
+			<div class="pull-left">
+				<button ng-click="cancelOrder()" type="button"
+					class="btn btn-primary button">Cancel</button>
+			</div>
+			<div class="pull-right">
+				<input type="submit" value="Order" class="btn btn-primary button">
+			</div>
+		</div>
+	</form>
+</div>
